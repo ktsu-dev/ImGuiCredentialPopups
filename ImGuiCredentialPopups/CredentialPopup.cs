@@ -1,16 +1,30 @@
 namespace ktsu.ImGuiCredentialPopups;
 
-using ktsu.CredentialCache;
-using ImGuiPopups;
 using ImGuiNET;
-using ktsu.CaseConverter;
-using ktsu.Extensions;
 
+using ImGuiPopups;
+
+using ktsu.CaseConverter;
+using ktsu.CredentialCache;
+
+/// <summary>
+/// Abstract base class for credential input popups with ImGui.
+/// Provides common functionality for displaying modal dialogs to collect credentials.
+/// </summary>
 public abstract class CredentialPopup
 {
 	private Action<Credential> OnConfirm { get; set; } = null!;
+	/// <summary>
+	/// Gets or sets the title of the popup window.
+	/// </summary>
 	protected string Title { get; set; } = string.Empty;
+	/// <summary>
+	/// Gets or sets the label for the input field.
+	/// </summary>
 	protected string Label { get; set; } = string.Empty;
+	/// <summary>
+	/// Gets the modal popup instance used to display the credential dialog.
+	/// </summary>
 	protected ImGuiPopups.Modal Modal { get; } = new();
 
 	/// <summary>
@@ -54,7 +68,16 @@ public abstract class CredentialPopup
 		}
 	}
 
+	/// <summary>
+	/// Shows the credential input fields.
+	/// </summary>
+	/// <returns>True if the edit process was completed and the popup should close, otherwise false.</returns>
 	protected abstract bool ShowEdit();
+
+	/// <summary>
+	/// Creates a credential object from the current input values.
+	/// </summary>
+	/// <returns>A credential object containing the user input.</returns>
 	protected abstract Credential MakeCredential();
 
 	/// <summary>
@@ -62,47 +85,4 @@ public abstract class CredentialPopup
 	/// </summary>
 	/// <returns>True if the modal is open.</returns>
 	public bool ShowIfOpen() => Modal.ShowIfOpen();
-}
-
-public class UsernamePasswordPopup : CredentialPopup
-{
-	private string username = string.Empty;
-	private string password = string.Empty;
-
-	protected override Credential MakeCredential() =>
-		new CredentialWithUsernamePassword()
-		{
-			Username = username.As<CredentialUsername>(),
-			Password = password.As<CredentialPassword>(),
-		};
-
-	/// <summary>
-	/// Show the content of the popup.
-	/// </summary>
-	protected override bool ShowEdit()
-	{
-		ImGui.InputText("Username", ref username, 100);
-		ImGui.InputText("Password", ref password, 100, ImGuiInputTextFlags.Password);
-		return false;
-	}
-}
-
-public class TokenPopup : CredentialPopup
-{
-	private string token = string.Empty;
-
-	protected override Credential MakeCredential() =>
-		new CredentialWithToken()
-		{
-			Token = token.As<CredentialToken>(),
-		};
-
-	/// <summary>
-	/// Show the content of the popup.
-	/// </summary>
-	protected override bool ShowEdit()
-	{
-		ImGui.InputText("Token", ref token, 100, ImGuiInputTextFlags.Password);
-		return false;
-	}
 }
