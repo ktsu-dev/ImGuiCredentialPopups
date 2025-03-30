@@ -2,6 +2,7 @@
 
 Changes since v1.0.0-alpha.69:
 
+- Add doc comments and split into class files ([@matt-edmondson](https://github.com/matt-edmondson))
 - Add LICENSE template ([@matt-edmondson](https://github.com/matt-edmondson))
 - Add mailmap ([@matt-edmondson](https://github.com/matt-edmondson))
 - Add scripts for automated metadata generation and versioning ([@matt-edmondson](https://github.com/matt-edmondson))
