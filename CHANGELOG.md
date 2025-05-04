@@ -1,3 +1,8 @@
+## v1.1.3-pre.1 (prerelease)
+
+Changes since v1.1.2:
+
+- Sync scripts\PSBuild.psm1 ([@ktsu[bot]](https://github.com/ktsu[bot]))
 ## v1.1.2 (patch)
 
 Changes since v1.1.1:
@@ -23,9 +28,7 @@ Changes since v1.1.2-pre.1:
 - Sync .editorconfig ([@ktsu[bot]](https://github.com/ktsu[bot]))
 ## v1.1.2-pre.1 (prerelease)
 
-Changes since v1.1.1:
-
-- Bump ktsu.ImGuiPopups from 1.3.0 to 1.3.1 in the ktsu group ([@dependabot[bot]](https://github.com/dependabot[bot]))
+Incremental prerelease update.
 ## v1.1.1 (patch)
 
 Changes since v1.1.0:
