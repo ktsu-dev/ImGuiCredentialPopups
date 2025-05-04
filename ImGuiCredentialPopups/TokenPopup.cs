@@ -1,7 +1,11 @@
+// Copyright (c) ktsu.dev
+// All rights reserved.
+// Licensed under the MIT license.
+
 namespace ktsu.ImGuiCredentialPopups;
 
-using ktsu.CredentialCache;
 using ImGuiNET;
+using ktsu.CredentialCache;
 using ktsu.Extensions;
 
 /// <summary>
