@@ -15,6 +15,23 @@ Changes since v1.1.3-pre.15:
 - Add mailmap ([@matt-edmondson](https://github.com/matt-edmondson))
 - Update package references for ktsu.CredentialCache and ktsu.ImGuiPopups to latest alpha versions ([@matt-edmondson](https://github.com/matt-edmondson))
 - Update package references for ktsu.CredentialCache and ktsu.ImGuiPopups to latest alpha versions ([@matt-edmondson](https://github.com/matt-edmondson))
+## v1.1.3-pre.16 (prerelease)
+
+Changes since v1.1.3-pre.15:
+
+- Remove Directory.Build.props and Directory.Build.targets files; add copyright notices to CredentialPopup, TokenPopup, and UsernamePasswordPopup classes; delete various PowerShell scripts for metadata and version management. ([@matt-edmondson](https://github.com/matt-edmondson))
+- Update project SDK version and fix README formatting ([@matt-edmondson](https://github.com/matt-edmondson))
+- Add LICENSE template ([@matt-edmondson](https://github.com/matt-edmondson))
+- Replace LICENSE file with LICENSE.md and update copyright information ([@matt-edmondson](https://github.com/matt-edmondson))
+- Add scripts for automated metadata generation and versioning ([@matt-edmondson](https://github.com/matt-edmondson))
+- Update packages ([@matt-edmondson](https://github.com/matt-edmondson))
+- Renamed metadata files ([@matt-edmondson](https://github.com/matt-edmondson))
+- Initial commit ([@matt-edmondson](https://github.com/matt-edmondson))
+- Update package references for ktsu.CredentialCache and ktsu.ImGuiPopups to latest alpha versions ([@matt-edmondson](https://github.com/matt-edmondson))
+- Add doc comments and split into class files ([@matt-edmondson](https://github.com/matt-edmondson))
+- Add mailmap ([@matt-edmondson](https://github.com/matt-edmondson))
+- Update package references for ktsu.CredentialCache and ktsu.ImGuiPopups to latest alpha versions ([@matt-edmondson](https://github.com/matt-edmondson))
+- Update package references for ktsu.CredentialCache and ktsu.ImGuiPopups to latest alpha versions ([@matt-edmondson](https://github.com/matt-edmondson))
 ## v1.1.3-pre.15 (prerelease)
 
 Changes since v1.1.3-pre.14:
