@@ -1,6 +1,6 @@
 MIT License
 
-https://github.com/ktsu-dev/ktsu-dev/ImGuiCredentialPopups
+https://github.com/ktsu-dev/ImGuiCredentialPopups
 
 Copyright (c) 2023-2025 ktsu-dev
 
