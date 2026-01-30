@@ -1,5 +1,5 @@
-## v1.1.4 (patch)
+## v1.1.5-pre.1 (prerelease)
 
-Changes since v1.1.3:
+Changes since v1.1.4:
 
-- Remove .github\workflows\project.yml ([@matt-edmondson](https://github.com/matt-edmondson))
+- Bump the ktsu group with 3 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
