@@ -4,9 +4,9 @@
 
 namespace ktsu.ImGuiCredentialPopups;
 
-using ImGuiNET;
+using Hexa.NET.ImGui;
 using ktsu.CredentialCache;
-using ktsu.Extensions;
+using ktsu.Semantics.Strings;
 
 /// <summary>
 /// Popup dialog for collecting token-based credentials.

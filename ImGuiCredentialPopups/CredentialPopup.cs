@@ -4,9 +4,9 @@
 
 namespace ktsu.ImGuiCredentialPopups;
 
-using ImGuiNET;
+using Hexa.NET.ImGui;
 
-using ImGuiPopups;
+using ktsu.ImGui.Popups;
 
 using ktsu.CaseConverter;
 using ktsu.CredentialCache;
