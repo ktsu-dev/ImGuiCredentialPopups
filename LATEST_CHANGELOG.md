@@ -1,8 +1,8 @@
-## v1.1.8 (patch)
+## v1.1.9 (patch)
 
-Changes since v1.1.7:
+Changes since v1.1.8:
 
-- chore: migrate credential popups to Hexa.NET.ImGui ([@matt-edmondson](https://github.com/matt-edmondson))
-- build: switch project to explicit SDK and multi-target .NET 9/10 ([@matt-edmondson](https://github.com/matt-edmondson))
-- Add TAGS.md with NuGet package tags ([@matt-edmondson](https://github.com/matt-edmondson))
+- Merge remote-tracking branch 'refs/remotes/origin/main' ([@ktsu[bot]](https://github.com/ktsu[bot]))
+- Sync .github\workflows\dotnet.yml ([@ktsu[bot]](https://github.com/ktsu[bot]))
+- Sync global.json ([@ktsu[bot]](https://github.com/ktsu[bot]))
 
