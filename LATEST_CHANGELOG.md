@@ -1,7 +1,4 @@
-## v1.1.42 (patch)
+## v1.1.42
 
-Changes since v1.1.41:
-
-- Sync .github\workflows\dotnet.yml ([@KtsuTools](https://github.com/KtsuTools))
-- Bump the ktsu group with 12 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
+No significant changes detected since v1.1.42.
 
