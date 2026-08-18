@@ -1,3 +1,7 @@
+## v1.1.46
+
+No significant changes detected since v1.1.46.
+
 ## v1.1.46 (patch)
 
 Changes since v1.1.45:
