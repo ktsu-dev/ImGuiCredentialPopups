@@ -1,6 +1,6 @@
-## v1.1.45 (patch)
+## v1.1.46 (patch)
 
-Changes since v1.1.44:
+Changes since v1.1.45:
 
-- Bump the ktsu group with 2 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
+- Stop Update SDKs failing when there is nothing to update ([@matt-edmondson](https://github.com/matt-edmondson))
 
