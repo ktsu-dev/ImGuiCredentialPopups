@@ -8,7 +8,7 @@
 [![NuGet Downloads](https://img.shields.io/nuget/dt/ktsu.ImGuiCredentialPopups?label=Downloads&logo=nuget)](https://nuget.org/packages/ktsu.ImGuiCredentialPopups)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/m/ktsu-dev/ImGuiCredentialPopups?label=Commits&logo=github)](https://github.com/ktsu-dev/ImGuiCredentialPopups/commits/main)
 [![GitHub contributors](https://img.shields.io/github/contributors/ktsu-dev/ImGuiCredentialPopups?label=Contributors&logo=github)](https://github.com/ktsu-dev/ImGuiCredentialPopups/graphs/contributors)
-[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ktsu-dev/ImGuiCredentialPopups/dotnet.yml?label=Build&logo=github)](https://github.com/ktsu-dev/ImGuiCredentialPopups/actions)
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ktsu-dev/ImGuiCredentialPopups/dotnet.yml?branch=main&label=Build&logo=github)](https://github.com/ktsu-dev/ImGuiCredentialPopups/actions)
 
 ## Introduction
 
