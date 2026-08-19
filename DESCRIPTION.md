@@ -1,1 +1,1 @@
-ImGuiCredentialPopups
+A .NET library providing ready-made Dear ImGui modal dialogs for collecting credentials. Ships username/password and token popups built on a shared CredentialPopup base, with masked input, keyboard shortcut handling, and confirmation callbacks that hand back a ktsu.CredentialCache credential ready to store or use.
