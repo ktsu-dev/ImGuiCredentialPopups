@@ -1,28 +1,6 @@
-## v1.2.0 (minor)
+## v1.2.1 (patch)
 
-Changes since v1.1.0:
+Changes since v1.2.0:
 
-- Merge main, keeping central package management ([@Claude](https://github.com/Claude))
-- [minor] Clear entered credentials on open and on confirm ([@Claude](https://github.com/Claude))
-- Expose internals to the test project to satisfy KTSU0002 ([@Claude](https://github.com/Claude))
-- [minor] Add a test project ([@Claude](https://github.com/Claude))
-- ci: make the SonarQube quality gate opt in [patch] ([@matt-edmondson](https://github.com/matt-edmondson))
-- ci: adopt the unified dotnet workflow [patch] ([@matt-edmondson](https://github.com/matt-edmondson))
-- chore: store icon.png in LFS as .gitattributes declares ([@matt-edmondson](https://github.com/matt-edmondson))
-- docs: scope build badge to the default branch ([@matt-edmondson](https://github.com/matt-edmondson))
-- docs: correct DESCRIPTION.md capability claim ([@matt-edmondson](https://github.com/matt-edmondson))
-- docs: broaden TAGS.md for better topic coverage ([@matt-edmondson](https://github.com/matt-edmondson))
-- docs: correct README, DESCRIPTION and TAGS metadata ([@matt-edmondson](https://github.com/matt-edmondson))
-- Stop Update SDKs failing when there is nothing to update ([@matt-edmondson](https://github.com/matt-edmondson))
-- Sync .editorconfig ([@KtsuTools](https://github.com/KtsuTools))
-- Sync global.json ([@KtsuTools](https://github.com/KtsuTools))
-- chore: update ktsu.Sdk to 2.21.1 [patch] ([@matt-edmondson](https://github.com/matt-edmondson))
-- chore: migrate credential popups to Hexa.NET.ImGui ([@matt-edmondson](https://github.com/matt-edmondson))
-- build: switch project to explicit SDK and multi-target .NET 9/10 ([@matt-edmondson](https://github.com/matt-edmondson))
-- Add TAGS.md with NuGet package tags ([@matt-edmondson](https://github.com/matt-edmondson))
-- Remove legacy build scripts ([@matt-edmondson](https://github.com/matt-edmondson))
-- Update configuration files and workflows for improved SDK management and CI/CD processes ([@matt-edmondson](https://github.com/matt-edmondson))
-- Remove Directory.Build.props and Directory.Build.targets files; add copyright notices to CredentialPopup, TokenPopup, and UsernamePasswordPopup classes; delete various PowerShell scripts for metadata and version management. ([@matt-edmondson](https://github.com/matt-edmondson))
-- Update project SDK version and fix README formatting ([@matt-edmondson](https://github.com/matt-edmondson))
-- Update packages ([@matt-edmondson](https://github.com/matt-edmondson))
+- Bump the ktsu group with 3 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
 
