@@ -11,8 +11,11 @@ using ktsu.Semantics.Strings;
 /// </summary>
 public class UsernamePasswordPopup : CredentialPopup
 {
-	private string username = string.Empty;
-	private string password = string.Empty;
+	// internal rather than private so the test project can set values and prove that Reset
+	// clears them. They must stay fields: ImGui.InputText takes a ref string, which a property
+	// cannot satisfy. internal keeps them off the public API surface.
+	internal string username = string.Empty;
+	internal string password = string.Empty;
 
 	/// <summary>
 	/// Creates a credential object with username and password from the current input values.
@@ -24,6 +27,13 @@ public class UsernamePasswordPopup : CredentialPopup
 			Username = username.As<CredentialUsername>(),
 			Password = password.As<CredentialPassword>(),
 		};
+
+	/// <inheritdoc />
+	protected override void Reset()
+	{
+		username = string.Empty;
+		password = string.Empty;
+	}
 
 	/// <summary>
 	/// Displays username and password input fields.

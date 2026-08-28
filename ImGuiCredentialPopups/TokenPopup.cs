@@ -11,7 +11,10 @@ using ktsu.Semantics.Strings;
 /// </summary>
 public class TokenPopup : CredentialPopup
 {
-	private string token = string.Empty;
+	// internal rather than private so the test project can set a value and prove that Reset
+	// clears it. It must stay a field: ImGui.InputText takes a ref string, which a property
+	// cannot satisfy. internal keeps it off the public API surface.
+	internal string token = string.Empty;
 
 	/// <summary>
 	/// Creates a credential object with token from the current input value.
@@ -22,6 +25,9 @@ public class TokenPopup : CredentialPopup
 		{
 			Token = token.As<CredentialToken>(),
 		};
+
+	/// <inheritdoc />
+	protected override void Reset() => token = string.Empty;
 
 	/// <summary>
 	/// Displays a token input field.
