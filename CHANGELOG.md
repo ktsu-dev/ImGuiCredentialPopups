@@ -1,6 +1,9 @@
-## v1.2.22
+## v1.2.23-pre.1 (prerelease)
 
-No significant changes detected since v1.2.22.
+Changes since v1.2.22:
+
+- Bump Polyfill from 11.4.0 to 11.4.1 ([@dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump the ktsu group with 4 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
 
 ## v1.2.22 (patch)
 
@@ -152,13 +155,17 @@ Changes since v1.1.0:
 - docs: broaden TAGS.md for better topic coverage ([@matt-edmondson](https://github.com/matt-edmondson))
 - docs: correct README, DESCRIPTION and TAGS metadata ([@matt-edmondson](https://github.com/matt-edmondson))
 - Stop Update SDKs failing when there is nothing to update ([@matt-edmondson](https://github.com/matt-edmondson))
+- Sync .github\workflows\dotnet.yml ([@KtsuTools](https://github.com/KtsuTools))
 - Sync .editorconfig ([@KtsuTools](https://github.com/KtsuTools))
 - Sync global.json ([@KtsuTools](https://github.com/KtsuTools))
+- Sync .github\workflows\dotnet.yml ([@KtsuTools](https://github.com/KtsuTools))
 - chore: update ktsu.Sdk to 2.21.1 [patch] ([@matt-edmondson](https://github.com/matt-edmondson))
 - chore: migrate credential popups to Hexa.NET.ImGui ([@matt-edmondson](https://github.com/matt-edmondson))
 - build: switch project to explicit SDK and multi-target .NET 9/10 ([@matt-edmondson](https://github.com/matt-edmondson))
 - Add TAGS.md with NuGet package tags ([@matt-edmondson](https://github.com/matt-edmondson))
+- Sync .github\workflows\dotnet.yml ([@KtsuTools](https://github.com/KtsuTools))
 - Remove legacy build scripts ([@matt-edmondson](https://github.com/matt-edmondson))
+- Remove .github\workflows\project.yml ([@matt-edmondson](https://github.com/matt-edmondson))
 - Update configuration files and workflows for improved SDK management and CI/CD processes ([@matt-edmondson](https://github.com/matt-edmondson))
 - Remove Directory.Build.props and Directory.Build.targets files; add copyright notices to CredentialPopup, TokenPopup, and UsernamePasswordPopup classes; delete various PowerShell scripts for metadata and version management. ([@matt-edmondson](https://github.com/matt-edmondson))
 - Update project SDK version and fix README formatting ([@matt-edmondson](https://github.com/matt-edmondson))
@@ -239,7 +246,6 @@ Changes since v1.1.42:
 Changes since v1.1.41:
 
 - Sync .github\workflows\dotnet.yml ([@KtsuTools](https://github.com/KtsuTools))
-- Bump the ktsu group with 12 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
 
 ## v1.1.41 (patch)
 
@@ -252,6 +258,7 @@ Changes since v1.1.40:
 Changes since v1.1.39:
 
 - Sync global.json ([@KtsuTools](https://github.com/KtsuTools))
+- Sync .github\workflows\dotnet.yml ([@KtsuTools](https://github.com/KtsuTools))
 
 ## v1.1.39 (patch)
 
@@ -458,10 +465,13 @@ Changes since v1.1.7:
 - chore: migrate credential popups to Hexa.NET.ImGui ([@matt-edmondson](https://github.com/matt-edmondson))
 - build: switch project to explicit SDK and multi-target .NET 9/10 ([@matt-edmondson](https://github.com/matt-edmondson))
 - Add TAGS.md with NuGet package tags ([@matt-edmondson](https://github.com/matt-edmondson))
+- Sync .github\workflows\dotnet.yml ([@KtsuTools](https://github.com/KtsuTools))
 
 ## v1.1.8-pre.1 (prerelease)
 
-No significant changes detected since v1.1.8.
+Changes since v1.1.7:
+
+- Sync .github\workflows\dotnet.yml ([@KtsuTools](https://github.com/KtsuTools))
 
 ## v1.1.7 (patch)
 
@@ -475,7 +485,11 @@ Changes since v1.1.6:
 
 ## v1.1.7-pre.1 (prerelease)
 
-No significant changes detected since v1.1.7.
+Changes since v1.1.6:
+
+- Sync .github\workflows\dotnet.yml ([@ktsu[bot]](https://github.com/ktsu[bot]))
+- Sync .github\workflows\dotnet.yml ([@ktsu[bot]](https://github.com/ktsu[bot]))
+- Sync .github\workflows\dotnet.yml ([@ktsu[bot]](https://github.com/ktsu[bot]))
 
 ## v1.1.6 (patch)
 
@@ -576,41 +590,15 @@ Changes since v1.1.5-pre.1:
 
 ## v1.1.5-pre.1 (prerelease)
 
-No significant changes detected since v1.1.5.
+Changes since v1.1.4:
+
+- Bump the ktsu group with 3 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
 
 ## v1.1.4 (patch)
 
 Changes since v1.1.3:
 
 - Remove .github\workflows\project.yml ([@matt-edmondson](https://github.com/matt-edmondson))
-- Bump the ktsu group with 3 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
-- Merge remote-tracking branch 'refs/remotes/origin/main' ([@ktsu[bot]](https://github.com/ktsu[bot]))
-- Sync global.json ([@ktsu[bot]](https://github.com/ktsu[bot]))
-- Sync .github\workflows\dotnet.yml ([@ktsu[bot]](https://github.com/ktsu[bot]))
-- Sync .gitignore ([@ktsu[bot]](https://github.com/ktsu[bot]))
-- Merge remote-tracking branch 'refs/remotes/origin/main' ([@ktsu[bot]](https://github.com/ktsu[bot]))
-- Sync scripts\update-winget-manifests.ps1 ([@ktsu[bot]](https://github.com/ktsu[bot]))
-- Sync global.json ([@ktsu[bot]](https://github.com/ktsu[bot]))
-- Sync scripts\PSBuild.psm1 ([@ktsu[bot]](https://github.com/ktsu[bot]))
-- Sync .github\workflows\update-sdks.yml ([@ktsu[bot]](https://github.com/ktsu[bot]))
-- Sync .github\workflows\dotnet.yml ([@ktsu[bot]](https://github.com/ktsu[bot]))
-- Sync .gitignore ([@ktsu[bot]](https://github.com/ktsu[bot]))
-- Bump the ktsu group with 2 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
-- Sync scripts\update-winget-manifests.ps1 ([@ktsu[bot]](https://github.com/ktsu[bot]))
-- Sync .github\workflows\dotnet.yml ([@ktsu[bot]](https://github.com/ktsu[bot]))
-- Sync scripts\PSBuild.psm1 ([@ktsu[bot]](https://github.com/ktsu[bot]))
-- Sync .github\workflows\dotnet.yml ([@ktsu[bot]](https://github.com/ktsu[bot]))
-- Sync scripts\PSBuild.psm1 ([@ktsu[bot]](https://github.com/ktsu[bot]))
-- Sync scripts\update-winget-manifests.ps1 ([@ktsu[bot]](https://github.com/ktsu[bot]))
-- Sync .github\workflows\dotnet.yml ([@ktsu[bot]](https://github.com/ktsu[bot]))
-- Sync .editorconfig ([@ktsu[bot]](https://github.com/ktsu[bot]))
-- Sync .gitattributes ([@ktsu[bot]](https://github.com/ktsu[bot]))
-- Sync .runsettings ([@ktsu[bot]](https://github.com/ktsu[bot]))
-- Bump the ktsu group with 2 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
-- Bump the ktsu group with 2 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
-- Bump the ktsu group with 2 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
-- Bump the ktsu group with 7 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
-- Bump the ktsu group with 7 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
 
 ## v1.1.4-pre.14 (prerelease)
 
@@ -706,7 +694,9 @@ Changes since v1.1.4-pre.1:
 
 ## v1.1.4-pre.1 (prerelease)
 
-No significant changes detected since v1.1.4.
+Changes since v1.1.3:
+
+- Bump the ktsu group with 7 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
 
 ## v1.1.3 (patch)
 
@@ -797,7 +787,9 @@ No significant changes detected since v1.1.3-pre.1.
 
 ## v1.1.3-pre.1 (prerelease)
 
-No significant changes detected since v1.1.3.
+Changes since v1.1.2:
+
+- Sync scripts\PSBuild.psm1 ([@ktsu[bot]](https://github.com/ktsu[bot]))
 
 ## v1.1.2 (patch)
 
@@ -828,7 +820,9 @@ Changes since v1.1.2-pre.1:
 
 ## v1.1.2-pre.1 (prerelease)
 
-No significant changes detected since v1.1.2.
+Changes since v1.1.1:
+
+- Bump ktsu.ImGuiPopups from 1.3.0 to 1.3.1 in the ktsu group ([@dependabot[bot]](https://github.com/dependabot[bot]))
 
 ## v1.1.1 (patch)
 
