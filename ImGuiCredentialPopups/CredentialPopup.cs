@@ -15,6 +15,11 @@ using ktsu.CredentialCache;
 /// </summary>
 public abstract class CredentialPopup
 {
+	/// <summary>
+	/// Whether the modal was showing as of the previous <see cref="ShowIfOpen"/> call.
+	/// </summary>
+	private bool wasShowing;
+
 	private Action<Credential> OnConfirm { get; set; } = null!;
 	/// <summary>
 	/// Gets or sets the title of the popup window.
@@ -48,8 +53,8 @@ public abstract class CredentialPopup
 	/// Clears any values entered into the popup's input fields.
 	/// </summary>
 	/// <remarks>
-	/// Called when the popup is opened, and again immediately after the credential has been built
-	/// on confirmation. A host typically holds one popup instance for the life of the application,
+	/// Called when the popup is opened, immediately after the credential has been built on
+	/// confirmation, and when the popup is dismissed without confirming. A host typically holds one popup instance for the life of the application,
 	/// so without this a secret would stay in the instance indefinitely and the next showing would
 	/// pre-fill with it.
 	///
@@ -119,6 +124,22 @@ public abstract class CredentialPopup
 	/// <summary>
 	/// Show the modal if it is open.
 	/// </summary>
+	/// <remarks>
+	/// The modal can also be dismissed without confirming -- by Escape or the title-bar close
+	/// button -- inside <see cref="ImGuiPopups.Modal.ShowIfOpen"/>, where no code of ours runs. So
+	/// this watches for the open-to-closed transition and resets then, ensuring a cancelled entry is
+	/// discarded just as a confirmed one is.
+	/// </remarks>
 	/// <returns>True if the modal is open.</returns>
-	public bool ShowIfOpen() => Modal.ShowIfOpen();
+	public bool ShowIfOpen()
+	{
+		bool open = Modal.ShowIfOpen();
+		if (wasShowing && !open)
+		{
+			Reset();
+		}
+
+		wasShowing = open;
+		return open;
+	}
 }
