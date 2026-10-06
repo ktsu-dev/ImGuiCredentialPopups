@@ -1,7 +1,6 @@
-## v1.2.24-pre.3 (prerelease)
+## v1.2.24 (patch)
 
-Changes since v1.2.24-pre.2:
+Changes since v1.2.23:
 
-- Bump Polyfill from 11.4.1 to 11.4.3 ([@dependabot[bot]](https://github.com/dependabot[bot]))
-- Bump the ktsu group with 1 update ([@dependabot[bot]](https://github.com/dependabot[bot]))
+- Discard typed credentials when a popup is dismissed without confirming [patch] ([@Claude](https://github.com/Claude))
 
