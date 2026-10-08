@@ -38,11 +38,20 @@ public class UsernamePasswordPopup : CredentialPopup
 	/// <summary>
 	/// Displays username and password input fields.
 	/// </summary>
+	/// <remarks>
+	/// Enter in the username field moves on to the password field; Enter in the password field
+	/// confirms.
+	/// </remarks>
 	/// <returns>True if the user completed the input via shortcuts, otherwise false.</returns>
 	protected override bool ShowEdit()
 	{
 		ImGui.InputText("Username", ref username, 100);
+		if (EnterPressedInLastItem())
+		{
+			ImGui.SetKeyboardFocusHere();
+		}
+
 		ImGui.InputText("Password", ref password, 100, ImGuiInputTextFlags.Password);
-		return false;
+		return EnterPressedInLastItem();
 	}
 }
