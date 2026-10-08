@@ -16,6 +16,16 @@ using ktsu.CredentialCache;
 public abstract class CredentialPopup
 {
 	/// <summary>
+	/// The longest credential, in UTF-8 bytes, that an input field accepts.
+	/// </summary>
+	/// <remarks>
+	/// <c>ImGui.InputText</c> silently drops anything past its buffer size, and the token and password
+	/// fields are masked, so a user cannot see a pasted secret being cut short. Real API keys and bearer
+	/// tokens run from about a hundred bytes to several hundred, so this leaves generous headroom.
+	/// </remarks>
+	internal const int MaxCredentialLength = 4096;
+
+	/// <summary>
 	/// Whether the modal was showing as of the previous <see cref="ShowIfOpen"/> call.
 	/// </summary>
 	private bool wasShowing;
