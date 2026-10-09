@@ -99,14 +99,17 @@ public sealed class PopupGallery
 		}
 
 		Assert.IsFalse(confirmed, "Staging a picture submitted the popup, so it photographed whatever came after it.");
-		Rectangle? window = photographed.Window;
-		Assert.IsNotNull(window, $"'{entry.Name}' never drew its popup.");
+		if (photographed.Window is not Rectangle window)
+		{
+			Assert.Fail($"'{entry.Name}' never drew its popup.");
+			return;
+		}
 
 		Rectangle region = new(
-			window.Value.MinX - Margin,
-			window.Value.MinY - Margin,
-			window.Value.MaxX + Margin,
-			window.Value.MaxY + Margin);
+			window.MinX - Margin,
+			window.MinY - Margin,
+			window.MaxX + Margin,
+			window.MaxY + Margin);
 		Bitmap32 picture = Crop(harness.Target, region);
 
 		Directory.CreateDirectory(OutputDirectory);
