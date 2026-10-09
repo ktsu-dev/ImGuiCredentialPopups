@@ -21,6 +21,8 @@ The credential types come from [`ktsu.CredentialCache`](https://github.com/ktsu-
 so what the popup hands you is ready to persist in the host's native keyring or pass straight to an
 API client.
 
+See the [popup gallery](docs/gallery/README.md) for a picture of each popup.
+
 ## Features
 
 - **Username/Password Popup**: `UsernamePasswordPopup` collects a username and a masked password
