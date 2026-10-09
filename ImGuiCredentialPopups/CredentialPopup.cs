@@ -120,6 +120,19 @@ public abstract class CredentialPopup
 	}
 
 	/// <summary>
+	/// Whether the item just drawn was the focused one when Enter or keypad Enter was pressed.
+	/// </summary>
+	/// <remarks>
+	/// Call it straight after an <c>ImGui.InputText</c>. It deliberately does not rely on
+	/// <see cref="ImGuiInputTextFlags.EnterReturnsTrue"/>: with that flag, Hexa's <c>ref string</c>
+	/// overload writes the edited text back only on the frame Enter is pressed, so typing and then
+	/// clicking OK would submit an empty value.
+	/// </remarks>
+	/// <returns>True if Enter was pressed in the item just drawn.</returns>
+	protected static bool EnterPressedInLastItem() =>
+		ImGui.IsItemFocused() && (ImGui.IsKeyPressed(ImGuiKey.Enter) || ImGui.IsKeyPressed(ImGuiKey.KeypadEnter));
+
+	/// <summary>
 	/// Shows the credential input fields.
 	/// </summary>
 	/// <returns>True if the edit process was completed and the popup should close, otherwise false.</returns>

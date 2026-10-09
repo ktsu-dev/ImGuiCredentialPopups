@@ -36,6 +36,6 @@ public class TokenPopup : CredentialPopup
 	protected override bool ShowEdit()
 	{
 		ImGui.InputText("Token", ref token, MaxCredentialLength, ImGuiInputTextFlags.Password);
-		return false;
+		return EnterPressedInLastItem();
 	}
 }
