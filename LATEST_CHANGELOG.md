@@ -1,6 +1,7 @@
-## v1.2.25 (patch)
+## v1.2.26 (patch)
 
-Changes since v1.2.24:
+Changes since v1.2.25:
 
-- Accept credentials up to 4096 bytes instead of truncating at 99 [patch] ([@Claude](https://github.com/Claude))
+- Merge main into fix/172-enter-submits ([@Claude](https://github.com/Claude))
+- Confirm the popup on Enter in its last field [patch] ([@Claude](https://github.com/Claude))
 
