@@ -1,6 +1,7 @@
-## v1.3.1 (patch)
+## v1.3.2-pre.1 (prerelease)
 
-Changes since v1.3.0:
+Changes since v1.3.1:
 
-- Show a popup from the gallery in the README ([@Claude](https://github.com/Claude))
+- Bump ktsu.CaseConverter and 4 others ([@dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump Polyfill from 11.4.3 to 11.4.5 ([@dependabot[bot]](https://github.com/dependabot[bot]))
 
