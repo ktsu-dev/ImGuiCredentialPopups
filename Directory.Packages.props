@@ -10,6 +10,6 @@
     <PackageVersion Include="ktsu.ImGui.App.Testing" Version="3.64.1" />
     <PackageVersion Include="ktsu.ImGui.Popups" Version="3.64.1" />
     <PackageVersion Include="ktsu.Semantics.Strings" Version="5.11.4" />
-    <PackageVersion Include="Polyfill" Version="11.4.3" />
+    <PackageVersion Include="Polyfill" Version="11.4.5" />
   </ItemGroup>
 </Project>
