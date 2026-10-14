@@ -30,6 +30,12 @@ public abstract class CredentialPopup
 	/// </summary>
 	private bool wasShowing;
 
+	/// <summary>
+	/// Whether <see cref="Open"/> has been called since <see cref="ShowContent"/> last ran, so the next
+	/// frame has to start a fresh showing even if the modal never closed in between.
+	/// </summary>
+	private bool freshShowing;
+
 	private Action<Credential> OnConfirm { get; set; } = null!;
 	/// <summary>
 	/// Gets or sets the title of the popup window.
@@ -53,6 +59,7 @@ public abstract class CredentialPopup
 	public virtual void Open(string title, string label, Action<Credential> onConfirm)
 	{
 		Reset();
+		freshShowing = true;
 		OnConfirm = onConfirm;
 		Title = title;
 		Label = label;
@@ -86,8 +93,13 @@ public abstract class CredentialPopup
 		ImGui.TextUnformatted(Label);
 		ImGui.NewLine();
 
-		if (!Modal.WasOpen && !ImGui.IsItemFocused())
+		// Every Open is a fresh showing, including one made while the popup is already up -- a second
+		// request, or an onConfirm that rejects the value and asks again. Modal.WasOpen stays true
+		// across those, so it cannot be what decides this.
+		if (freshShowing)
 		{
+			freshShowing = false;
+			DiscardActiveEdit();
 			ImGui.SetKeyboardFocusHere();
 		}
 
@@ -101,6 +113,22 @@ public abstract class CredentialPopup
 		{
 			Confirm();
 		}
+	}
+
+	/// <summary>
+	/// Drops ImGui's own copy of whatever is being typed, so it cannot be written back over a field
+	/// that <see cref="Reset"/> has just cleared.
+	/// </summary>
+	/// <remarks>
+	/// While an <c>InputText</c> is active ImGui edits its own buffer and copies it into the
+	/// <c>ref string</c> each frame. Deactivating it is not enough on its own: ImGui remembers the
+	/// deactivated widget's text and writes that back on the next frame too. Both have to go, or the
+	/// previous request's secret returns and is handed to the new callback.
+	/// </remarks>
+	private static void DiscardActiveEdit()
+	{
+		ImGuiP.ClearActiveID();
+		ImGui.GetCurrentContext().InputTextDeactivatedState.ID = 0;
 	}
 
 	/// <summary>
