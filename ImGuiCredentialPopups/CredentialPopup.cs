@@ -21,7 +21,8 @@ public abstract class CredentialPopup
 	/// <remarks>
 	/// <c>ImGui.InputText</c> silently drops anything past its buffer size, and the token and password
 	/// fields are masked, so a user cannot see a pasted secret being cut short. Real API keys and bearer
-	/// tokens run from about a hundred bytes to several hundred, so this leaves generous headroom.
+	/// tokens run from about a hundred bytes to several hundred, so this leaves generous headroom. The
+	/// buffer size passed to <c>ImGui.InputText</c> counts the null terminator, so callers pass this plus one.
 	/// </remarks>
 	internal const int MaxCredentialLength = 4096;
 

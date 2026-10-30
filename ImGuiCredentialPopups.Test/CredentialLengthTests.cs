@@ -140,4 +140,69 @@ public sealed class CredentialLengthTests
 		Assert.AreEqual(username, pair.Username.WeakString);
 		Assert.AreEqual(password, pair.Password.WeakString);
 	}
+
+	/// <summary>
+	/// Builds a secret of exactly <see cref="CredentialPopup.MaxCredentialLength"/> UTF-8 bytes, either
+	/// all single-byte ASCII or all two-byte characters.
+	/// </summary>
+	/// <param name="multiByte">Whether to use a two-byte UTF-8 character.</param>
+	/// <returns>The secret.</returns>
+	private static string SecretAtTheLimit(bool multiByte)
+	{
+		string secret = multiByte
+			? new string('\u00e9', CredentialPopup.MaxCredentialLength / 2)
+			: LongSecret(CredentialPopup.MaxCredentialLength);
+		Assert.AreEqual(CredentialPopup.MaxCredentialLength, System.Text.Encoding.UTF8.GetByteCount(secret), "Precondition: the secret is exactly at the limit.");
+		return secret;
+	}
+
+	/// <summary>
+	/// A token of exactly <see cref="CredentialPopup.MaxCredentialLength"/> UTF-8 bytes, the documented
+	/// longest accepted credential, is returned unchanged rather than losing its last byte.
+	/// </summary>
+	/// <param name="multiByte">Whether the token is made of two-byte UTF-8 characters.</param>
+	[TestMethod]
+	[DataRow(false)]
+	[DataRow(true)]
+	public void ATokenAtTheLimitComesBackWhole(bool multiByte)
+	{
+		// Arrange
+		ProbeTokenPopup popup = new();
+		popup.Open("GitHub", "Personal access token", _ => { });
+		Frames(popup, 2);
+		string secret = SecretAtTheLimit(multiByte);
+
+		// Act
+		Type(popup, secret);
+
+		// Assert
+		Assert.AreEqual(secret, ((CredentialWithToken)popup.Build()).Token.WeakString);
+	}
+
+	/// <summary>
+	/// The same for both fields of the username and password popup.
+	/// </summary>
+	/// <param name="multiByte">Whether the username and password are made of two-byte UTF-8 characters.</param>
+	[TestMethod]
+	[DataRow(false)]
+	[DataRow(true)]
+	public void AUsernameAndPasswordAtTheLimitComeBackWhole(bool multiByte)
+	{
+		// Arrange
+		ProbeUsernamePasswordPopup popup = new();
+		popup.Open("Azure DevOps", "Sign in", _ => { });
+		Frames(popup, 2);
+		string username = SecretAtTheLimit(multiByte);
+		string password = new([.. SecretAtTheLimit(multiByte).Reverse()]);
+
+		// Act
+		Type(popup, username);
+		PressTab(popup);
+		Type(popup, password);
+
+		// Assert
+		CredentialWithUsernamePassword pair = (CredentialWithUsernamePassword)popup.Build();
+		Assert.AreEqual(username, pair.Username.WeakString);
+		Assert.AreEqual(password, pair.Password.WeakString);
+	}
 }
