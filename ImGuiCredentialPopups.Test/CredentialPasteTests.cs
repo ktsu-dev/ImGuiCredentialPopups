@@ -35,6 +35,9 @@ public sealed class CredentialPasteTests
 		io.DeltaTime = 1f / 60f;
 		io.BackendFlags |= ImGuiBackendFlags.RendererHasTextures;
 		io.ConfigFlags |= ImGuiConfigFlags.NavEnableKeyboard;
+		// ImGui defaults this on for Apple builds, where it moves the paste shortcut from Ctrl+V to
+		// Cmd+V. Turning it off makes the Ctrl+V these tests send paste on every platform.
+		io.ConfigMacOSXBehaviors = false;
 		unsafe
 		{
 			// Keep the test from writing an imgui.ini into the working directory.
@@ -99,6 +102,7 @@ public sealed class CredentialPasteTests
 		popup.Open("GitHub", "Personal access token", c => confirmed = c);
 		Assert.IsTrue(Frames(popup, 2), "Precondition: the popup is showing.");
 		Paste(popup, clipboard);
+		Assert.IsTrue(popup.token.Contains("tok", StringComparison.Ordinal), "Precondition: the paste reached the field.");
 		Assert.AreNotEqual("tok", popup.token, "Precondition: the field holds the whitespace that was pasted.");
 
 		// Act
@@ -127,6 +131,7 @@ public sealed class CredentialPasteTests
 		popup.Open("Azure DevOps", "Sign in", c => confirmed = c);
 		Assert.IsTrue(Frames(popup, 2), "Precondition: the popup is showing.");
 		Paste(popup, clipboard);
+		Assert.IsTrue(popup.username.Contains("user", StringComparison.Ordinal), "Precondition: the paste reached the field.");
 		Assert.AreNotEqual("user", popup.username, "Precondition: the field holds the whitespace that was pasted.");
 		Assert.IsTrue(Press(popup, ImGuiKey.Enter), "Enter in the username field must not close the popup.");
 		Paste(popup, " pass ");
