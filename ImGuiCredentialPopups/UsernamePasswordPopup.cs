@@ -20,11 +20,17 @@ public class UsernamePasswordPopup : CredentialPopup
 	/// <summary>
 	/// Creates a credential object with username and password from the current input values.
 	/// </summary>
+	/// <remarks>
+	/// The username is trimmed, because each field holds a single line and ImGui turns a pasted line
+	/// break into a space, so a username copied with its line ending would otherwise gain a trailing
+	/// space. The password is returned unchanged, since a password can legitimately start or end with
+	/// a space; a line break pasted into it arrives as a space.
+	/// </remarks>
 	/// <returns>A CredentialWithUsernamePassword object containing the username and password.</returns>
 	protected override Credential MakeCredential() =>
 		new CredentialWithUsernamePassword()
 		{
-			Username = username.As<CredentialUsername>(),
+			Username = username.Trim().As<CredentialUsername>(),
 			Password = password.As<CredentialPassword>(),
 		};
 
