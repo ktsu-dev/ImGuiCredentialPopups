@@ -19,11 +19,16 @@ public class TokenPopup : CredentialPopup
 	/// <summary>
 	/// Creates a credential object with token from the current input value.
 	/// </summary>
+	/// <remarks>
+	/// The token is trimmed. The field holds a single line, so ImGui turns a pasted line break into a
+	/// space, and a token copied together with its line ending would otherwise come back with a
+	/// trailing space the masked field hides. A token never legitimately starts or ends with whitespace.
+	/// </remarks>
 	/// <returns>A CredentialWithToken object containing the token.</returns>
 	protected override Credential MakeCredential() =>
 		new CredentialWithToken()
 		{
-			Token = token.As<CredentialToken>(),
+			Token = token.Trim().As<CredentialToken>(),
 		};
 
 	/// <inheritdoc />
