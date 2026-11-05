@@ -40,7 +40,7 @@ public class TokenPopup : CredentialPopup
 	/// <returns>True if the user completed the input via shortcuts, otherwise false.</returns>
 	protected override bool ShowEdit()
 	{
-		ImGui.InputText("Token", ref token, MaxCredentialLength + 1, ImGuiInputTextFlags.Password);
+		InputCredential("Token", ref token, ImGuiInputTextFlags.Password);
 		return EnterPressedInLastItem();
 	}
 }

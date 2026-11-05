@@ -51,13 +51,13 @@ public class UsernamePasswordPopup : CredentialPopup
 	/// <returns>True if the user completed the input via shortcuts, otherwise false.</returns>
 	protected override bool ShowEdit()
 	{
-		ImGui.InputText("Username", ref username, MaxCredentialLength + 1);
+		InputCredential("Username", ref username);
 		if (EnterPressedInLastItem())
 		{
 			ImGui.SetKeyboardFocusHere();
 		}
 
-		ImGui.InputText("Password", ref password, MaxCredentialLength + 1, ImGuiInputTextFlags.Password);
+		InputCredential("Password", ref password, ImGuiInputTextFlags.Password);
 		return EnterPressedInLastItem();
 	}
 }

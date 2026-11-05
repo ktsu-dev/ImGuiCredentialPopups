@@ -2,6 +2,8 @@
 
 namespace ktsu.ImGuiCredentialPopups;
 
+using System.Numerics;
+using System.Text;
 using Hexa.NET.ImGui;
 
 using ktsu.ImGui.Popups;
@@ -19,10 +21,12 @@ public abstract class CredentialPopup
 	/// The longest credential, in UTF-8 bytes, that an input field accepts.
 	/// </summary>
 	/// <remarks>
-	/// <c>ImGui.InputText</c> silently drops anything past its buffer size, and the token and password
-	/// fields are masked, so a user cannot see a pasted secret being cut short. Real API keys and bearer
-	/// tokens run from about a hundred bytes to several hundred, so this leaves generous headroom. The
-	/// buffer size passed to <c>ImGui.InputText</c> counts the null terminator, so callers pass this plus one.
+	/// <c>ImGui.InputText</c> rejects a paste that doesn't fit in the space left in its buffer
+	/// <em>whole</em>: none of it is inserted, and the token and password fields are masked, so the user
+	/// would see nothing wrong. <see cref="InputCredential"/> detects that, reports it under the field,
+	/// and keeps Enter and OK from confirming until the field is edited. Most API keys and bearer tokens
+	/// are a few hundred bytes, though a JWT carrying many claims can run to several kilobytes. The buffer
+	/// size passed to <c>ImGui.InputText</c> counts the null terminator, so callers pass this plus one.
 	/// </remarks>
 	internal const int MaxCredentialLength = 4096;
 
@@ -36,6 +40,18 @@ public abstract class CredentialPopup
 	/// frame has to start a fresh showing even if the modal never closed in between.
 	/// </summary>
 	private bool freshShowing;
+
+	/// <summary>
+	/// Gets whether the last paste into one of the fields was too long to fit, so ImGui inserted none
+	/// of it. While this is set, the popup shows why and Enter and OK do not confirm. Editing a field
+	/// or reopening the popup clears it.
+	/// </summary>
+	internal bool PasteTooLong { get; private set; }
+
+	/// <summary>
+	/// Gets the centre of the OK button as of the last frame, so tests can click it.
+	/// </summary>
+	internal Vector2 OkButtonCenter { get; private set; }
 
 	private Action<Credential> OnConfirm { get; set; } = null!;
 	/// <summary>
@@ -60,6 +76,7 @@ public abstract class CredentialPopup
 	public virtual void Open(string title, string label, Action<Credential> onConfirm)
 	{
 		Reset();
+		PasteTooLong = false;
 		freshShowing = true;
 		OnConfirm = onConfirm;
 		Title = title;
@@ -104,16 +121,73 @@ public abstract class CredentialPopup
 			ImGui.SetKeyboardFocusHere();
 		}
 
-		if (ShowEdit())
+		bool enterPressed = ShowEdit();
+		if (PasteTooLong)
+		{
+			ImGui.TextColored(new Vector4(1f, 0.4f, 0.4f, 1f), $"The pasted text is too long (the limit is {MaxCredentialLength} bytes), so none of it was entered.");
+		}
+
+		if (enterPressed && !PasteTooLong)
 		{
 			Confirm();
 		}
 
 		ImGui.SameLine();
-		if (ImGui.Button($"OK###{Title.ToSnakeCase()}_OK"))
+		ImGui.BeginDisabled(PasteTooLong);
+		bool okClicked = ImGui.Button($"OK###{Title.ToSnakeCase()}_OK");
+		OkButtonCenter = (ImGui.GetItemRectMin() + ImGui.GetItemRectMax()) / 2f;
+		ImGui.EndDisabled();
+		if (okClicked && !PasteTooLong)
 		{
 			Confirm();
 		}
+	}
+
+	/// <summary>
+	/// Displays one credential input field, holding at most <see cref="MaxCredentialLength"/> UTF-8 bytes,
+	/// and records a paste that was rejected for not fitting in it.
+	/// </summary>
+	/// <param name="label">The field's label.</param>
+	/// <param name="value">The field's value.</param>
+	/// <param name="flags">Flags for <c>ImGui.InputText</c>, such as <see cref="ImGuiInputTextFlags.Password"/>.</param>
+	/// <returns>True if the value was edited this frame.</returns>
+	protected bool InputCredential(string label, ref string value, ImGuiInputTextFlags flags = ImGuiInputTextFlags.None)
+	{
+		bool edited = ImGui.InputText(label, ref value, MaxCredentialLength + 1, flags);
+		if (edited)
+		{
+			PasteTooLong = false;
+		}
+		else if (ImGui.IsItemActive() && PasteShortcutPressed() && !ClipboardFits(value))
+		{
+			// ImGui inserts a paste only if all of it fits, and this one didn't, so nothing changed.
+			PasteTooLong = true;
+		}
+
+		return edited;
+	}
+
+	// The shortcuts ImGui's InputText pastes on. With ConfigMacOSXBehaviors, ImGui reports Cmd as Ctrl.
+	private static bool PasteShortcutPressed()
+	{
+		ImGuiIOPtr io = ImGui.GetIO();
+		return (io.KeyCtrl && !io.KeyShift && ImGui.IsKeyPressed(ImGuiKey.V))
+			|| (io.KeyShift && !io.KeyCtrl && ImGui.IsKeyPressed(ImGuiKey.Insert));
+	}
+
+	// Whether the clipboard fits in the space left after the field's current text. A paste that
+	// replaces a selection has more room than this, but such a paste that still didn't change the
+	// field was rejected all the same.
+	private static bool ClipboardFits(string value)
+	{
+		string? clipboard = ImGui.GetClipboardTextS();
+		if (string.IsNullOrEmpty(clipboard))
+		{
+			return true;
+		}
+
+		int remaining = MaxCredentialLength - Encoding.UTF8.GetByteCount(value);
+		return Encoding.UTF8.GetByteCount(clipboard) <= remaining;
 	}
 
 	/// <summary>
