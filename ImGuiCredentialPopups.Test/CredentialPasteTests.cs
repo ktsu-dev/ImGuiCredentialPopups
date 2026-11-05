@@ -146,4 +146,127 @@ public sealed class CredentialPasteTests
 		Assert.AreEqual("user", pair.Username.WeakString);
 		Assert.AreEqual(" pass ", pair.Password.WeakString, "A password may legitimately start or end with a space.");
 	}
+
+	/// <summary>
+	/// A token one byte over <see cref="CredentialPopup.MaxCredentialLength"/> doesn't fit the field,
+	/// so ImGui inserts none of it. The popup must say so and refuse to confirm, rather than let
+	/// Enter or OK submit the empty field.
+	/// </summary>
+	/// <param name="pressOk">Whether to confirm with the OK button rather than Enter.</param>
+	[TestMethod]
+	[DataRow(false)]
+	[DataRow(true)]
+	public void AnOverLimitTokenPasteIsReportedAndNotConfirmed(bool pressOk)
+	{
+		// Arrange
+		TokenPopup popup = new();
+		Credential? confirmed = null;
+		popup.Open("GitHub", "Personal access token", c => confirmed = c);
+		Assert.IsTrue(Frames(popup, 2), "Precondition: the popup is showing.");
+		Paste(popup, new string('a', CredentialPopup.MaxCredentialLength + 1));
+		Assert.AreEqual(string.Empty, popup.token, "Precondition: ImGui rejected the whole paste.");
+
+		// Act
+		bool open = pressOk ? ClickOk(popup) : Press(popup, ImGuiKey.Enter);
+
+		// Assert
+		Assert.IsTrue(popup.PasteTooLong, "The rejected paste should be reported.");
+		Assert.IsTrue(open, "The popup should stay open.");
+		Assert.IsNull(confirmed, "An empty token must not be confirmed.");
+	}
+
+	/// <summary>
+	/// A paste that doesn't fit in the space left after text already in the field is rejected too.
+	/// The field keeps only what was there, so confirming would submit a partial password.
+	/// </summary>
+	[TestMethod]
+	public void AnOverLimitPasswordPasteAfterExistingTextIsReportedAndNotConfirmed()
+	{
+		// Arrange
+		UsernamePasswordPopup popup = new();
+		Credential? confirmed = null;
+		popup.Open("Azure DevOps", "Sign in", c => confirmed = c);
+		Assert.IsTrue(Frames(popup, 2), "Precondition: the popup is showing.");
+		Paste(popup, "user");
+		Assert.IsTrue(Press(popup, ImGuiKey.Enter), "Enter in the username field must not close the popup.");
+		Paste(popup, "abc");
+		Paste(popup, new string('p', CredentialPopup.MaxCredentialLength - 2));
+		Assert.AreEqual("abc", popup.password, "Precondition: ImGui rejected the whole paste.");
+
+		// Act
+		bool open = Press(popup, ImGuiKey.Enter);
+
+		// Assert
+		Assert.IsTrue(popup.PasteTooLong, "The rejected paste should be reported.");
+		Assert.IsTrue(open, "The popup should stay open.");
+		Assert.IsNull(confirmed, "A partial password must not be confirmed.");
+	}
+
+	/// <summary>
+	/// Once the user edits the field after a rejected paste, the message goes away and the popup
+	/// confirms what the field holds.
+	/// </summary>
+	[TestMethod]
+	public void EditingAfterAnOverLimitPasteClearsTheReport()
+	{
+		// Arrange
+		TokenPopup popup = new();
+		Credential? confirmed = null;
+		popup.Open("GitHub", "Personal access token", c => confirmed = c);
+		Assert.IsTrue(Frames(popup, 2), "Precondition: the popup is showing.");
+		Paste(popup, new string('a', CredentialPopup.MaxCredentialLength + 1));
+		Assert.IsTrue(popup.PasteTooLong, "Precondition: the rejected paste is reported.");
+
+		// Act
+		Paste(popup, "tok");
+
+		// Assert
+		Assert.IsFalse(popup.PasteTooLong, "A paste that fits should clear the report.");
+		Assert.IsFalse(Press(popup, ImGuiKey.Enter), "Enter should close the popup.");
+		Assert.IsNotNull(confirmed, "Enter should confirm.");
+		Assert.AreEqual("tok", ((CredentialWithToken)confirmed).Token.WeakString);
+	}
+
+	/// <summary>
+	/// A paste of exactly <see cref="CredentialPopup.MaxCredentialLength"/> bytes still fits, is not
+	/// reported, and confirms with Enter or OK. The OK case also shows that <see cref="ClickOk"/>
+	/// reaches the button, which the over-limit test relies on.
+	/// </summary>
+	/// <param name="pressOk">Whether to confirm with the OK button rather than Enter.</param>
+	[TestMethod]
+	[DataRow(false)]
+	[DataRow(true)]
+	public void APasteAtTheLimitIsNotReported(bool pressOk)
+	{
+		// Arrange
+		TokenPopup popup = new();
+		Credential? confirmed = null;
+		string secret = new('a', CredentialPopup.MaxCredentialLength);
+		popup.Open("GitHub", "Personal access token", c => confirmed = c);
+		Assert.IsTrue(Frames(popup, 2), "Precondition: the popup is showing.");
+
+		// Act
+		Paste(popup, secret);
+
+		// Assert
+		Assert.IsFalse(popup.PasteTooLong, "A paste that fits should not be reported.");
+		Assert.IsFalse(pressOk ? ClickOk(popup) : Press(popup, ImGuiKey.Enter), "Confirming should close the popup.");
+		Assert.IsNotNull(confirmed, "The popup should confirm.");
+		Assert.AreEqual(secret, ((CredentialWithToken)confirmed).Token.WeakString);
+	}
+
+	/// <summary>
+	/// Clicks the OK button by moving the mouse onto it and pressing the left button.
+	/// </summary>
+	private static bool ClickOk(CredentialPopup popup)
+	{
+		ImGuiIOPtr io = ImGui.GetIO();
+		Vector2 okCenter = popup.OkButtonCenter;
+		io.AddMousePosEvent(okCenter.X, okCenter.Y);
+		Assert.IsTrue(Frames(popup, 1), "Moving the mouse must not close the popup.");
+		io.AddMouseButtonEvent(0, true);
+		bool open = Frames(popup, 1);
+		io.AddMouseButtonEvent(0, false);
+		return Frames(popup, 2) && open;
+	}
 }
