@@ -153,18 +153,70 @@ public abstract class CredentialPopup
 	/// <returns>True if the value was edited this frame.</returns>
 	protected bool InputCredential(string label, ref string value, ImGuiInputTextFlags flags = ImGuiInputTextFlags.None)
 	{
+		// Decide whether a paste fits before InputText runs: ImGui deletes the selection before it
+		// tries the insert, so afterwards the selection that made room for the paste is gone.
+		string before = value;
+		PasteAttempt? paste = PasteAttemptIn(ImGui.GetID(label));
+
 		bool edited = ImGui.InputText(label, ref value, MaxCredentialLength + 1, flags);
-		if (edited)
+		if (paste is { Fits: false } rejected)
+		{
+			// ImGui inserts a paste only if all of it fits, and this one didn't. With nothing selected
+			// that leaves the field as it was, but a selection has already been deleted, so put it back.
+			PasteTooLong = true;
+			if (edited)
+			{
+				value = before;
+				RestoreAfterRejectedPaste(rejected);
+				edited = false;
+			}
+		}
+		else if (edited)
 		{
 			PasteTooLong = false;
 		}
-		else if (ImGui.IsItemActive() && PasteShortcutPressed() && !ClipboardFits(value))
-		{
-			// ImGui inserts a paste only if all of it fits, and this one didn't, so nothing changed.
-			PasteTooLong = true;
-		}
 
 		return edited;
+	}
+
+	/// <summary>
+	/// A paste about to be made into the active field, and the selection it replaces.
+	/// </summary>
+	/// <param name="Fits">Whether ImGui will insert it: the clipboard fits in the field once the selection is deleted.</param>
+	/// <param name="SelectionStart">Where the selection starts, as ImGui counts it.</param>
+	/// <param name="SelectionEnd">Where the selection ends, as ImGui counts it.</param>
+	private readonly record struct PasteAttempt(bool Fits, int SelectionStart, int SelectionEnd);
+
+	// The paste the field with this ID is about to make this frame, or null if it isn't pasting.
+	private static PasteAttempt? PasteAttemptIn(uint id)
+	{
+		ImGuiContextPtr context = ImGui.GetCurrentContext();
+		if (context.ActiveId != id || context.InputTextState.ID != id || !PasteShortcutPressed())
+		{
+			return null;
+		}
+
+		string? clipboard = ImGui.GetClipboardTextS();
+		if (string.IsNullOrEmpty(clipboard))
+		{
+			return null;
+		}
+
+		// ImGui keeps the field's text, and the selection's ends, in UTF-8 bytes.
+		int start = ImGuiP.GetSelectionStart(ref context.InputTextState);
+		int end = ImGuiP.GetSelectionEnd(ref context.InputTextState);
+		int remaining = MaxCredentialLength - context.InputTextState.TextLen + Math.Abs(end - start);
+		return new PasteAttempt(Encoding.UTF8.GetByteCount(clipboard) <= remaining, start, end);
+	}
+
+	// Has ImGui reload the field from the value it held before the paste, with the same selection,
+	// on the next frame. Until then ImGui's own buffer still lacks the deleted selection.
+	private static void RestoreAfterRejectedPaste(PasteAttempt paste)
+	{
+		ImGuiContextPtr context = ImGui.GetCurrentContext();
+		context.InputTextState.WantReloadUserBuf = 1;
+		context.InputTextState.ReloadSelectionStart = paste.SelectionStart;
+		context.InputTextState.ReloadSelectionEnd = paste.SelectionEnd;
 	}
 
 	// The shortcuts ImGui's InputText pastes on. With ConfigMacOSXBehaviors, ImGui reports Cmd as Ctrl.
@@ -173,21 +225,6 @@ public abstract class CredentialPopup
 		ImGuiIOPtr io = ImGui.GetIO();
 		return (io.KeyCtrl && !io.KeyShift && ImGui.IsKeyPressed(ImGuiKey.V))
 			|| (io.KeyShift && !io.KeyCtrl && ImGui.IsKeyPressed(ImGuiKey.Insert));
-	}
-
-	// Whether the clipboard fits in the space left after the field's current text. A paste that
-	// replaces a selection has more room than this, but such a paste that still didn't change the
-	// field was rejected all the same.
-	private static bool ClipboardFits(string value)
-	{
-		string? clipboard = ImGui.GetClipboardTextS();
-		if (string.IsNullOrEmpty(clipboard))
-		{
-			return true;
-		}
-
-		int remaining = MaxCredentialLength - Encoding.UTF8.GetByteCount(value);
-		return Encoding.UTF8.GetByteCount(clipboard) <= remaining;
 	}
 
 	/// <summary>
