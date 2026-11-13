@@ -256,6 +256,142 @@ public sealed class CredentialPasteTests
 	}
 
 	/// <summary>
+	/// Pasting an over-limit token over a selection is rejected as a whole, as it is with nothing
+	/// selected, but ImGui has already deleted the selection by then, so the field changes. The paste
+	/// must still be reported, the selected text put back, and nothing confirmed.
+	/// </summary>
+	/// <param name="pressOk">Whether to confirm with the OK button rather than Enter.</param>
+	[TestMethod]
+	[DataRow(false)]
+	[DataRow(true)]
+	public void AnOverLimitTokenPasteOverASelectionIsReportedAndNotConfirmed(bool pressOk)
+	{
+		// Arrange
+		TokenPopup popup = new();
+		Credential? confirmed = null;
+		popup.Open("GitHub", "Personal access token", c => confirmed = c);
+		Assert.IsTrue(Frames(popup, 2), "Precondition: the popup is showing.");
+		Paste(popup, "ghp_existing");
+		Chord(popup, ImGuiKey.A);
+
+		// Act
+		Paste(popup, new string('a', CredentialPopup.MaxCredentialLength + 1));
+		bool open = pressOk ? ClickOk(popup) : Press(popup, ImGuiKey.Enter);
+
+		// Assert
+		Assert.IsTrue(popup.PasteTooLong, "The rejected paste should be reported.");
+		Assert.IsTrue(open, "The popup should stay open.");
+		Assert.IsNull(confirmed, "Nothing should be confirmed.");
+		Assert.AreEqual("ghp_existing", popup.token, "The selected text should be put back.");
+	}
+
+	/// <summary>
+	/// The same over a partial selection: the text outside the selection still counts against the
+	/// limit, and the selected part is put back rather than lost.
+	/// </summary>
+	[TestMethod]
+	public void AnOverLimitPasswordPasteOverAPartialSelectionIsReportedAndNotConfirmed()
+	{
+		// Arrange
+		UsernamePasswordPopup popup = new();
+		Credential? confirmed = null;
+		popup.Open("Azure DevOps", "Sign in", c => confirmed = c);
+		Assert.IsTrue(Frames(popup, 2), "Precondition: the popup is showing.");
+		Paste(popup, "user");
+		Assert.IsTrue(Press(popup, ImGuiKey.Enter), "Enter in the username field must not close the popup.");
+		Paste(popup, "oldpass");
+		ShiftPress(popup, ImGuiKey.LeftArrow);
+		ShiftPress(popup, ImGuiKey.LeftArrow);
+
+		// Act: "ss" is selected, so 4091 bytes fit and 4092 do not.
+		Paste(popup, new string('p', CredentialPopup.MaxCredentialLength - 4));
+		bool open = Press(popup, ImGuiKey.Enter);
+
+		// Assert
+		Assert.IsTrue(popup.PasteTooLong, "The rejected paste should be reported.");
+		Assert.IsTrue(open, "The popup should stay open.");
+		Assert.IsNull(confirmed, "A partial password must not be confirmed.");
+		Assert.AreEqual("oldpass", popup.password, "The selected text should be put back.");
+	}
+
+	/// <summary>
+	/// A paste over a selection has the selection's room as well as the space left after the field's
+	/// text. Pasting a token over 2048 bytes over a selection of the same token goes in, so it must
+	/// not be reported and the popup must confirm it.
+	/// </summary>
+	[TestMethod]
+	public void RepastingALongTokenOverItsSelectionIsNotReported()
+	{
+		// Arrange
+		TokenPopup popup = new();
+		Credential? confirmed = null;
+		string secret = new('a', 3000);
+		popup.Open("GitHub", "Personal access token", c => confirmed = c);
+		Assert.IsTrue(Frames(popup, 2), "Precondition: the popup is showing.");
+		Paste(popup, secret);
+		Assert.IsFalse(popup.PasteTooLong, "Precondition: the first paste fits.");
+		Chord(popup, ImGuiKey.A);
+
+		// Act
+		Paste(popup, secret);
+
+		// Assert
+		Assert.IsFalse(popup.PasteTooLong, "A paste that went in should not be reported.");
+		Assert.IsFalse(Press(popup, ImGuiKey.Enter), "Enter should close the popup.");
+		Assert.IsNotNull(confirmed, "Enter should confirm.");
+		Assert.AreEqual(secret, ((CredentialWithToken)confirmed).Token.WeakString);
+	}
+
+	/// <summary>
+	/// A paste over a selection that fits only because the selection makes room goes in and is not
+	/// reported.
+	/// </summary>
+	[TestMethod]
+	public void APasteThatFitsOnlyInPlaceOfTheSelectionIsNotReported()
+	{
+		// Arrange
+		TokenPopup popup = new();
+		Credential? confirmed = null;
+		string secret = new('b', CredentialPopup.MaxCredentialLength);
+		popup.Open("GitHub", "Personal access token", c => confirmed = c);
+		Assert.IsTrue(Frames(popup, 2), "Precondition: the popup is showing.");
+		Paste(popup, "ghp_existing");
+		Chord(popup, ImGuiKey.A);
+
+		// Act
+		Paste(popup, secret);
+
+		// Assert
+		Assert.IsFalse(popup.PasteTooLong, "A paste that went in should not be reported.");
+		Assert.AreEqual(secret, popup.token, "Precondition: the paste replaced the selection.");
+		Assert.IsFalse(Press(popup, ImGuiKey.Enter), "Enter should close the popup.");
+		Assert.IsNotNull(confirmed, "Enter should confirm.");
+		Assert.AreEqual(secret, ((CredentialWithToken)confirmed).Token.WeakString);
+	}
+
+	/// <summary>
+	/// Presses a key with Ctrl held, such as Ctrl+A to select all.
+	/// </summary>
+	private static void Chord(CredentialPopup popup, ImGuiKey key) => WithModifier(popup, ImGuiKey.ModCtrl, key);
+
+	/// <summary>
+	/// Presses a key with Shift held, such as Shift+Left to extend the selection.
+	/// </summary>
+	private static void ShiftPress(CredentialPopup popup, ImGuiKey key) => WithModifier(popup, ImGuiKey.ModShift, key);
+
+	private static void WithModifier(CredentialPopup popup, ImGuiKey modifier, ImGuiKey key)
+	{
+		ImGuiIOPtr io = ImGui.GetIO();
+		io.AddKeyEvent(modifier, true);
+		Assert.IsTrue(Frames(popup, 1), "Holding a modifier must not close the popup.");
+		io.AddKeyEvent(key, true);
+		Assert.IsTrue(Frames(popup, 1), "The chord must not close the popup.");
+		io.AddKeyEvent(key, false);
+		io.AddKeyEvent(modifier, false);
+		Assert.IsTrue(Frames(popup, 2), "Releasing the chord must not close the popup.");
+	}
+
+	/// <summary>
 	/// Clicks the OK button by moving the mouse onto it and pressing the left button.
 	/// </summary>
 	private static bool ClickOk(CredentialPopup popup)
