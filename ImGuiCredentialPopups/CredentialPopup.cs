@@ -127,21 +127,33 @@ public abstract class CredentialPopup
 			ImGui.TextColored(new Vector4(1f, 0.4f, 0.4f, 1f), $"The pasted text is too long (the limit is {MaxCredentialLength} bytes), so none of it was entered.");
 		}
 
-		if (enterPressed && !PasteTooLong)
+		bool canConfirm = !PasteTooLong && CanConfirm;
+		if (enterPressed && canConfirm)
 		{
 			Confirm();
 		}
 
 		ImGui.SameLine();
-		ImGui.BeginDisabled(PasteTooLong);
+		ImGui.BeginDisabled(!canConfirm);
 		bool okClicked = ImGui.Button($"OK###{Title.ToSnakeCase()}_OK");
 		OkButtonCenter = (ImGui.GetItemRectMin() + ImGui.GetItemRectMax()) / 2f;
 		ImGui.EndDisabled();
-		if (okClicked && !PasteTooLong)
+		if (okClicked && canConfirm)
 		{
 			Confirm();
 		}
 	}
+
+	/// <summary>
+	/// Gets whether the current input values make a credential worth confirming.
+	/// </summary>
+	/// <remarks>
+	/// While this is false the OK button is disabled and Enter does not confirm, so the
+	/// <c>onConfirm</c> callback is never handed a credential that cannot work, such as a blank token.
+	/// The base implementation always allows confirming; the built-in popups require their fields to
+	/// be filled in. Override it in a custom popup to apply the same guard to its own fields.
+	/// </remarks>
+	protected virtual bool CanConfirm => true;
 
 	/// <summary>
 	/// Displays one credential input field, holding at most <see cref="MaxCredentialLength"/> UTF-8 bytes,

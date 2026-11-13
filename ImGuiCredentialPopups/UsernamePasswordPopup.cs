@@ -42,6 +42,13 @@ public class UsernamePasswordPopup : CredentialPopup
 	}
 
 	/// <summary>
+	/// Gets whether both a username and a password have been entered. A username of only whitespace
+	/// counts as none, since <see cref="MakeCredential"/> trims it to an empty one. The password is not
+	/// trimmed, so any password that isn't empty counts.
+	/// </summary>
+	protected override bool CanConfirm => !string.IsNullOrWhiteSpace(username) && password.Length > 0;
+
+	/// <summary>
 	/// Displays username and password input fields.
 	/// </summary>
 	/// <remarks>
