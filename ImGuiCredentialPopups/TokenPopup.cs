@@ -35,6 +35,12 @@ public class TokenPopup : CredentialPopup
 	protected override void Reset() => token = string.Empty;
 
 	/// <summary>
+	/// Gets whether a token has been entered. A token of only whitespace counts as none, since
+	/// <see cref="MakeCredential"/> trims it to an empty one.
+	/// </summary>
+	protected override bool CanConfirm => !string.IsNullOrWhiteSpace(token);
+
+	/// <summary>
 	/// Displays a token input field.
 	/// </summary>
 	/// <returns>True if the user completed the input via shortcuts, otherwise false.</returns>

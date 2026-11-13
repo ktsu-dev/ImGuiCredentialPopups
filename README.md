@@ -157,6 +157,7 @@ Abstract base class for credential input popups.
 | `ShowIfOpen()` | `bool` | Renders the popup if it is open and returns whether it is open. Call once per frame. |
 | `ShowEdit()` | `bool` | *(protected, abstract)* Draws the input fields. Returns `true` if the user completed input via a keyboard shortcut. |
 | `MakeCredential()` | `Credential` | *(protected, abstract)* Builds the credential from the current input values. |
+| `CanConfirm` | `bool` | *(protected, virtual)* Whether the current input values can be confirmed. While it is `false`, OK is disabled and Enter does not confirm. Defaults to `true`; `TokenPopup` requires a token and `UsernamePasswordPopup` requires both a username and a password. |
 
 ### `UsernamePasswordPopup`
 
