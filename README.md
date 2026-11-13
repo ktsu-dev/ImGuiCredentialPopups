@@ -163,6 +163,10 @@ Abstract base class for credential input popups.
 `CredentialPopup` that collects a username and masked password, producing a
 `CredentialWithUsernamePassword`.
 
+| Name | Return Type | Description |
+|------|-------------|-------------|
+| `Open(string title, string label, string username, Action<Credential> onConfirm)` | `void` | Opens the popup with the username filled in and keyboard focus in the password field. The password always starts empty. Use it to retry after a rejected sign-in, or to ask for the password of a user the app already knows. |
+
 ### `TokenPopup`
 
 `CredentialPopup` that collects a single masked token, producing a `CredentialWithToken`.
