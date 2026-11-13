@@ -18,6 +18,33 @@ public class UsernamePasswordPopup : CredentialPopup
 	internal string password = string.Empty;
 
 	/// <summary>
+	/// Whether the current showing should start with keyboard focus in Password rather than Username,
+	/// because <see cref="Open(string, string, string, Action{Credential})"/> pre-filled the username.
+	/// </summary>
+	private bool focusPassword;
+
+	/// <summary>
+	/// Open the popup with the username already filled in, for a retry after a rejected sign-in or
+	/// for re-entering the password of a user the app already knows.
+	/// </summary>
+	/// <remarks>
+	/// Only the username is kept: the password field starts empty, as it does for every
+	/// <see cref="CredentialPopup.Open"/>. When <paramref name="username"/> isn't empty, keyboard focus
+	/// starts in the password field, so the password can be typed straight away.
+	/// </remarks>
+	/// <param name="title">The title of the popup window.</param>
+	/// <param name="label">The label of the input fields.</param>
+	/// <param name="username">The username to fill in. Empty leaves the field empty, as the other overload does.</param>
+	/// <param name="onConfirm">The delegate to invoke when the popup has been confirmed.</param>
+	public void Open(string title, string label, string username, Action<Credential> onConfirm)
+	{
+		Ensure.NotNull(username);
+		Open(title, label, onConfirm);
+		this.username = username;
+		focusPassword = username.Length > 0;
+	}
+
+	/// <summary>
 	/// Creates a credential object with username and password from the current input values.
 	/// </summary>
 	/// <remarks>
@@ -39,6 +66,7 @@ public class UsernamePasswordPopup : CredentialPopup
 	{
 		username = string.Empty;
 		password = string.Empty;
+		focusPassword = false;
 	}
 
 	/// <summary>
@@ -52,8 +80,10 @@ public class UsernamePasswordPopup : CredentialPopup
 	protected override bool ShowEdit()
 	{
 		InputCredential("Username", ref username);
-		if (EnterPressedInLastItem())
+		if (EnterPressedInLastItem() || focusPassword)
 		{
+			// A fresh showing focuses the first field; a pre-filled username moves that on to Password.
+			focusPassword = false;
 			ImGui.SetKeyboardFocusHere();
 		}
 
