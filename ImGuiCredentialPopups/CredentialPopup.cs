@@ -54,6 +54,12 @@ public abstract class CredentialPopup
 	internal Vector2 OkButtonCenter { get; private set; }
 
 	private Action<Credential> OnConfirm { get; set; } = null!;
+
+	/// <summary>
+	/// A confirmed credential, and the callback it is for, waiting to be handed over once
+	/// <see cref="ShowIfOpen"/> has finished drawing the modal.
+	/// </summary>
+	private (Credential Credential, Action<Credential> Callback)? pendingConfirm;
 	/// <summary>
 	/// Gets or sets the title of the popup window.
 	/// </summary>
@@ -207,18 +213,22 @@ public abstract class CredentialPopup
 	}
 
 	/// <summary>
-	/// Builds the credential, clears the input fields, then hands the credential to the caller.
+	/// Builds the credential, clears the input fields and closes the popup, leaving the credential for
+	/// <see cref="ShowIfOpen"/> to hand to the caller.
 	/// </summary>
 	/// <remarks>
 	/// The order is deliberate. <see cref="Reset"/> runs before <c>OnConfirm</c> so the secret is
 	/// already out of this instance by the time the callback -- which may do anything, including
-	/// throw -- is invoked.
+	/// throw -- is invoked. The callback is not invoked here: this runs between the modal's
+	/// <c>BeginPopupModal</c> and <c>EndPopup</c>, and a callback that threw would skip
+	/// <c>EndPopup</c> and leave ImGui's window stack unbalanced, which ImGui aborts the process for
+	/// on the next <c>Render</c> even if the host caught the exception.
 	/// </remarks>
 	private void Confirm()
 	{
 		Credential credential = MakeCredential();
 		Reset();
-		OnConfirm(credential);
+		pendingConfirm = (credential, OnConfirm);
 		ImGui.CloseCurrentPopup();
 	}
 
@@ -255,6 +265,10 @@ public abstract class CredentialPopup
 	/// button -- inside <see cref="ImGuiPopups.Modal.ShowIfOpen"/>, where no code of ours runs. So
 	/// this watches for the open-to-closed transition and resets then, ensuring a cancelled entry is
 	/// discarded just as a confirmed one is.
+	///
+	/// A confirmation's <c>onConfirm</c> callback runs here, after the modal has been drawn and
+	/// ImGui's popup scope has ended, so an exception it throws reaches the caller with the popup
+	/// closed and ImGui's state intact.
 	/// </remarks>
 	/// <returns>True if the modal is open.</returns>
 	public bool ShowIfOpen()
@@ -266,6 +280,14 @@ public abstract class CredentialPopup
 		}
 
 		wasShowing = open;
+
+		if (pendingConfirm is (Credential credential, Action<Credential> callback))
+		{
+			// Clear it first: the callback may throw, or reopen the popup and be confirmed again.
+			pendingConfirm = null;
+			callback(credential);
+		}
+
 		return open;
 	}
 }
